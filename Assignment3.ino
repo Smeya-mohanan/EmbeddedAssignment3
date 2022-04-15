@@ -43,83 +43,90 @@ void setup()
   pinMode(analog_pin, INPUT);
   vTaskDelay(1000 / portTICK_PERIOD_MS); //in ms 
   Serial.begin(9600);                  //baud rate value
+  task1();
   task2();
   task3();
   task4();
   task5();
   task6();
   task7();
+  task8();
   task9();
-  
- xTaskCreatePinnedToCore(  
-             task2,
-            "TASK 2",   
-            2048,           
-            NULL,           
-            8,              
-            NULL,           
-            app_cpu);       
- 
- xTaskCreatePinnedToCore(  
-            task3,      
-            "TASK 3",   
-            1024,           
-            NULL,           
-            1,              
-            NULL,           
-            app_cpu);       
+  //task to run forever 
+ xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task1,      // Function to be called
+            "TASK 1",   // Name of task
+            1024,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            9,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+  xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOStask2,     
+            task2,
+            "TASK 2",   // Name of task
+            2048,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            8,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+ xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task3,      // Function to be called
+            "TASK 3",   // Name of task
+            1024,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            1,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+ xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task4,          // Function to be called
+            "TASK 4",       // Name of task
+            4095,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            4,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+ xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task5,      // Function to be called
+            "TASK 5",   // Name of task
+            1024,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            5,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+ xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task6,      // Function to be called
+            "TASK 6",   // Name of task
+            2048,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            9,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
 
- xTaskCreatePinnedToCore(  
-            task4,          
-            "TASK 4",       
-            4095,           
-            NULL,           
-            4,              
-            NULL,           
-            app_cpu);       
- 
- xTaskCreatePinnedToCore(  
-            task5,      
-            "TASK 5",   
-            1024,           
-            NULL,           
-            5,              
-            NULL,           
-            app_cpu);       
- 
- xTaskCreatePinnedToCore(  
-            task6,      
-            "TASK 6",   
-            2048,          
-            NULL,           
-            9,              
-            NULL,           
-            app_cpu);       
- xTaskCreatePinnedToCore(  
-            task7,      
-            "TASK 7",   
-            4095,           
-            NULL,           
-            3,             
-            NULL,           
-            app_cpu);       
- xTaskCreatePinnedToCore(  
-            task9,      
-            "TASK 9",   
-            2048,           
-            NULL,           
-            1,              
-            NULL,           
-            app_cpu);       
+ xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task7,      // Function to be called // task 7 & 8 are clubbed together
+            "TASK 7",   // Name of task
+            4095,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            3,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            task9,      // Function to be called
+            "TASK 9",   // Name of task
+            2048,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            1,              // Task priority
+            NULL,           // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only) 
 }
-void loop() 
+void task1(void*parameter)
 { digitalWrite(ledPin, HIGH);                    //task1
   delayMicroseconds(50);
   digitalWrite(ledPin, LOW);
   delay(500);
   vTaskDelay(50/portTICK_PERIOD_MS);
 }
-void task2() (void *parameter)                                   //task2
+void task2(void*parameter)                                   //task2
 {buttonstate1 = digitalRead(buttonpin1);
   if(buttonstate1 ==1)
   {digitalWrite(ledPin, HIGH);}
@@ -127,7 +134,7 @@ void task2() (void *parameter)                                   //task2
   {digitalWrite(ledPin, LOW);}
   vTaskDelay(200/portTICK_PERIOD_MS);
 }
-void task3() (void *parameter)                                  //task3
+ void task3(void*parameter)                                  //task3
 {OnCycle = pulseIn(PulseIN, HIGH, 10000);
   OffCycle = pulseIn(PulseIN, LOW, 10000);
   T = OnCycle + OffCycle;
@@ -139,7 +146,7 @@ void task3() (void *parameter)                                  //task3
   Serial.print(F);
   vTaskDelay(1/portTICK_PERIOD_MS);  
 }
-void task4() (void *parameter)                                  //task4
+void task4(void*parameter)                                  //task4
 {potValue = analogRead(potPin);
   analog_in_array[4]=analog_pin;
   for(int i=0; i<4;i++)
@@ -147,19 +154,19 @@ void task4() (void *parameter)                                  //task4
   Serial.println(potValue);
   vTaskDelay(41/portTICK_PERIOD_MS);
 }
-void task5() (void *parameter)                                //task5
+void task5(void*parameter)                                //task5
 {average=0;
   for(int i=0;i<4;i++)
   {average=average+analog_in_array[i];}
   average_analog_in=average/4;
   vTaskDelay(41/portTICK_PERIOD_MS);
 }
-void task6() (void *parameter)                               //task6
+void task6(void*parameter)                               //task6
 {for(int i=0;i<1000;i++)
 {asm volatile("nop\n\t"::);}
 vTaskDelay(100/portTICK_PERIOD_MS);
 }
-void task7() (void *parameter)                              //task7 & task8
+void task7(void*parameter)                              //task7 & task8
 {int n=0;
   int error_code= 0;
   for (int i =0;i<n; i++)
@@ -173,7 +180,7 @@ void task7() (void *parameter)                              //task7 & task8
      digitalWrite(ledPin, LOW);}
     vTaskDelay(333/portTICK_PERIOD_MS);
 } 
-void task9() (void *parameter)                               //task9
+void task9(void*parameter)                               //task9
 {Serial.print("error_code");
    Serial.print(error_code);
    Serial.print(",");
@@ -185,4 +192,6 @@ void task9() (void *parameter)                               //task9
    Serial.print(",");
    vTaskDelay(5000/portTICK_PERIOD_MS);
 }
+Void loop()
+{}
   
